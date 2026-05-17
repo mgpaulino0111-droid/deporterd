@@ -93,12 +93,11 @@ document.addEventListener('DOMContentLoaded', () => {
             provincia: "Santo Domingo", 
             whatsapp: "18095551234", 
             imagenes: ["https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=500"], 
-            plan: "Premium", 
-            esEliminable: false 
+            plan: "Premium"
         }
     ];
 
-    // INICIALIZACIÓN SÓLIDA DE LA BASE DE DATOS LOCAL
+    // INICIALIZACIÓN DE LA BASE DE DATOS LOCAL (PERSISTENTE)
     let baseDeDatosActual = JSON.parse(localStorage.getItem('deporterd_database_live'));
     if (!baseDeDatosActual || !Array.isArray(baseDeDatosActual)) {
         baseDeDatosActual = mockCloudDatabase;
@@ -154,7 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (btnVolverAlPaso1) btnVolverAlPaso1.addEventListener('click', () => cambiarAUnPaso(1));
 
-    // VALIDACIÓN Y AVANCE - PASO 2 (DETALLES TÉCNICOS CORREGIDOS)
+    // VALIDACIÓN Y AVANCE - PASO 2
     if (btnPasarAlPaso3) {
         btnPasarAlPaso3.addEventListener('click', () => {
             const necesitaManual = (selectMarca.value === "Otra marca..." || selectModelo.value === "Escribir modelo..." || selectTipo.value !== "Equipamiento / Herramienta Principal");
@@ -294,26 +293,24 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // GUARDADO FINAL COMPLETO CON MODAL PROPIO (Sustituye por completo al Alert)
+    // GUARDADO FINAL 100% PERSISTENTE Y SIN TRABAS
     if (flujoForm) {
         flujoForm.addEventListener('submit', (e) => {
             e.preventDefault();
             
-            const fileComp = document.getElementById('formComprobante').files[0];
-            if (!fileComp) { 
-                if (errorStep4) { errorStep4.innerText = "Debes adjuntar el comprobante o captura de tu transferencia bancaria."; errorStep4.style.display = 'flex'; }
-                return; 
+            // Cerrar el modal inmediatamente para liberar la pantalla
+            if (modalPublicar) {
+                modalPublicar.style.display = 'none';
             }
-            if (errorStep4) errorStep4.style.display = 'none';
 
-            let mkF = selectMarca.value;
-            let modF = selectModelo.value;
+            let mkF = selectMarca ? selectMarca.value : "Genérico";
+            let modF = selectModelo ? selectModelo.value : "Genérico";
             
-            if (mkF === "Otra marca..." || selectTipo.value !== "Equipamiento / Herramienta Principal") { 
+            if ((selectTipo && selectTipo.value !== "Equipamiento / Herramienta Principal") || mkF === "Otra marca...") { 
                 if(mkF === "Otra marca...") { mkF = "Variada"; }
-                modF = inputModeloManual.value.trim(); 
+                if(inputModeloManual) modF = inputModeloManual.value.trim(); 
             } else if (modF === "Escribir modelo...") { 
-                modF = inputModeloManual.value.trim(); 
+                if(inputModeloManual) modF = inputModeloManual.value.trim(); 
             }
 
             if (!modF) { modF = "Genérico"; }
@@ -326,49 +323,50 @@ document.addEventListener('DOMContentLoaded', () => {
                 id: Date.now(),
                 titulo: `${mkF} ${modF}`,
                 marca: mkF,
-                tipo: selectTipo.value,
-                precio: parseFloat(document.getElementById('formPrecio').value) || 0,
-                categoria: selectCategoria.value,
-                condicion: document.getElementById('formCondicion').value,
-                vendedor: document.getElementById('formVendedor').value,
-                provincia: document.getElementById('formProvincia').value,
-                whatsapp: document.getElementById('formWhatsapp').value,
+                tipo: selectTipo ? selectTipo.value : "Otros",
+                precio: parseFloat(document.getElementById('formPrecio')?.value) || 0,
+                categoria: selectCategoria ? selectCategoria.value : "Otros Deportes",
+                condicion: document.getElementById('formCondicion')?.value || "Usado",
+                vendedor: document.getElementById('formVendedor')?.value || "Anónimo",
+                provincia: document.getElementById('formProvincia')?.value || "Santo Domingo",
+                whatsapp: document.getElementById('formWhatsapp')?.value || "18095551234",
                 imagenes: imagenesFinales,
-                plan: planSeleccionado,
-                esEliminable: true
+                plan: planSeleccionado
             };
 
-            // Guardar en array y actualizar LocalStorage inmediatamente
+            // 1. Añadir el nuevo elemento a nuestro array en memoria
             baseDeDatosActual.unshift(nuevoAnuncio);
+            
+            // 2. GUARDADO COMPLETO E INMEDIATO EN LOCALSTORAGE (No se borra al actualizar)
             localStorage.setItem('deporterd_database_live', JSON.stringify(baseDeDatosActual));
             
-            // LIMPIEZA ABSOLUTA DE CACHÉ DE SUBIDA
+            // Limpiar caché multimedia e inputs del formulario
             base64ImagesArray = [];
             if (previewMultiGrid) previewMultiGrid.innerHTML = "";
             
-            // Renderizar la portada con los nuevos cambios en segundo plano
+            // Volver a pintar las tarjetas en la página
             renderizarProductos();
             
-            // CIERRE INMEDIATO DEL MODAL DE PUBLICACIÓN (Evita que se tranque)
-            if (modalPublicar) modalPublicar.style.display = 'none';
-            
-            // Reajustar el formulario a blanco y devolver al Paso 1
+            // Limpiar el formulario y reestablecer al paso 1
             flujoForm.reset();
             if (wrapperModeloManual) wrapperModeloManual.style.display = "none"; 
             cambiarAUnPaso(1);
 
-            // ACTIVAR NUEVO MODAL ESTÉTICO PROPIO (Adiós al aviso gris de Google)
+            // GESTIÓN DEL MODAL O AVISO DE ÉXITO
             const modalExitoPropio = document.getElementById('modalExitoPropio');
-            const btnCerrarExitoPropio = document.getElementById('btnCerrarExitoPropio');
-            
             if (modalExitoPropio) {
                 modalExitoPropio.style.display = 'flex';
-            }
-
-            if (btnCerrarExitoPropio) {
-                btnCerrarExitoPropio.addEventListener('click', () => {
-                    modalExitoPropio.style.display = 'none';
-                });
+                const btnCerrarExitoPropio = document.getElementById('btnCerrarExitoPropio');
+                if (btnCerrarExitoPropio) {
+                    btnCerrarExitoPropio.addEventListener('click', () => { modalExitoPropio.style.display = 'none'; });
+                }
+            } else {
+                // Notificación dinámica elegante integrada por si acaso
+                const notificacion = document.createElement('div');
+                notificacion.style = "position:fixed; bottom:24px; right:24px; background:#0066ff; color:#ffffff; padding:16px 24px; border-radius:12px; font-family:system-ui, sans-serif; box-shadow:0 10px 25px rgba(0,0,0,0.15); z-index:999999; font-weight:600;";
+                notificacion.innerText = "✨ ¡Anuncio guardado y enviado a revisión!";
+                document.body.appendChild(notificacion);
+                setTimeout(() => notificacion.remove(), 4000);
             }
         });
     }
@@ -409,7 +407,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if(modalDetalle) modalDetalle.style.display = "flex";
     }
 
-    // RENDERIZADO SÓLIDO EN PORTADA DE ARTÍCULOS
+    // RENDERIZADO EN PORTADA (SIN BOTONES "X" DE BORRADO URBANO)
     function renderizarProductos() {
         if (!productsGrid) return;
         productsGrid.innerHTML = '';
@@ -431,10 +429,8 @@ document.addEventListener('DOMContentLoaded', () => {
             tarjeta.className = art.plan === "Premium" ? 'product-card card-premium' : (art.plan === "Destacado" ? 'product-card card-destacado' : 'product-card');
             
             const imgP = (art.imagenes && art.imagenes.length > 0) ? art.imagenes[0] : "https://images.unsplash.com/photo-1517649763962-0c623066013b?w=500";
-            const btnB = art.esEliminable ? `<button class="btn-eliminar-anuncio" data-id="${art.id}">❌</button>` : '';
 
             tarjeta.innerHTML = `
-                ${btnB}
                 <div class="card-img-container">
                     <img src="${imgP}">
                     <span class="badge-condicion">${art.condicion}</span>
@@ -445,24 +441,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     <p class="card-price">RD$ ${art.precio.toLocaleString()}</p>
                     <div class="card-footer">
                         <div><span class="seller-name">${art.vendedor}</span><span class="seller-loc">${art.provincia}</span></div>
-                        <span class="btn-whatsapp" style="background:#22c55e; padding:4px 8px; font-size:11px; border-radius:4px; color:#fff; font-weight:bold;">Ver más</span>
+                        <span class="btn-whatsapp" style="background:#0066ff; padding:6px 12px; font-size:11px; border-radius:6px; color:#fff; font-weight:bold;">Ver más</span>
                     </div>
                 </div>
             `;
             
             tarjeta.addEventListener('click', () => verDetallesProducto(art.id));
-
-            // Botón de eliminar directo sin trabas
-            const bDel = tarjeta.querySelector('.btn-eliminar-anuncio');
-            if (bDel) {
-                bDel.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    baseDeDatosActual = baseDeDatosActual.filter(x => x.id !== art.id);
-                    localStorage.setItem('deporterd_database_live', JSON.stringify(baseDeDatosActual));
-                    renderizarProductos();
-                });
-            }
-
             productsGrid.appendChild(tarjeta);
         });
     }
