@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta name="google-site-verification" content="ijvsXA_Npz0mUTvwfus7IMGoKL2NT9ApQ9dKbeZa0Yo" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DeporteRD - El Marketplace Deportivo de República Dominicana</title>
@@ -32,8 +31,8 @@
 
             <div class="tags-container">
                 <button class="tag-btn active" data-cat="Todos">Todos</button>
-                <button class="tag-btn" data-cat="Bicicletas">Bicicletas</button>
                 <button class="tag-btn" data-cat="Pádel">Pádel</button>
+                <button class="tag-btn" data-cat="Bicicletas">Bicicletas</button>
                 <button class="tag-btn" data-cat="Tenis">Tenis</button>
                 <button class="tag-btn" data-cat="Béisbol">Béisbol</button>
                 <button class="tag-btn" data-cat="Otros">Otros</button>
@@ -91,37 +90,39 @@
                     </div>
                     
                     <div class="step-actions">
-                        <button type="button" class="btn-next" onclick="cambiarPaso(2)">Siguiente Paso &rarr;</button>
+                        <button type="button" class="btn-next" id="btnPasarAlPaso2">Siguiente Paso &rarr;</button>
                     </div>
                 </div>
 
                 <div id="step-articulo" class="step-content">
                     <h3 class="step-title">Detalles del Artículo Deportivo</h3>
-                    <p class="step-subtitle">Describe las especificaciones técnicas de lo que vas a vender.</p>
+                    <p class="step-subtitle">Selecciona las especificaciones técnicas oficiales de tu producto.</p>
                     
-                    <div class="form-group">
-                        <label>Título del Anuncio *</label>
-                        <input type="text" id="formTitulo" placeholder="Ej. Pala de Pádel Babolat Technical Viper 2024" required>
-                    </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Marca *</label>
-                            <input type="text" id="formMarca" placeholder="Ej. Babolat, Wilson, Trek" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Precio (RD$) *</label>
-                            <input type="number" id="formPrecio" placeholder="Ej. 14500" required>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Categoría *</label>
+                            <label>Categoría / Deporte *</label>
                             <select id="formCategoria" required>
+                                <option value="">-- Selecciona Deporte --</option>
                                 <option value="Pádel">Pádel</option>
                                 <option value="Bicicletas">Bicicletas</option>
                                 <option value="Tenis">Tenis</option>
                                 <option value="Béisbol">Béisbol</option>
                                 <option value="Otros">Otros</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Marca *</label>
+                            <select id="formMarca" required disabled>
+                                <option value="">-- Elige primero el deporte --</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Modelo *</label>
+                            <select id="formModelo" required disabled>
+                                <option value="">-- Elige primero la marca --</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -134,9 +135,16 @@
                         </div>
                     </div>
 
+                    <div class="form-group">
+                        <label>Precio (RD$) *</label>
+                        <input type="number" id="formPrecio" placeholder="Ej. 14500" required>
+                    </div>
+
+                    <input type="hidden" id="formTitulo">
+
                     <div class="step-actions">
-                        <button type="button" class="btn-prev" onclick="cambiarPaso(1)">&larr; Atrás</button>
-                        <button type="button" class="btn-next" onclick="cambiarPaso(3)">Siguiente Paso &rarr;</button>
+                        <button type="button" class="btn-prev" id="btnVolverAlPaso1">&larr; Atrás</button>
+                        <button type="button" class="btn-next" id="btnPasarAlPaso3">Siguiente Paso &rarr;</button>
                     </div>
                 </div>
 
@@ -150,14 +158,14 @@
                             <p>Haz clic para seleccionar la foto desde tu galería</p>
                         </label>
                         <input type="file" id="formImg" accept="image/*" required>
-                        <div id="previewContainer" class="img-preview-box" style="display: none;">
-                            <img id="imgFormPreview" src="" alt="Vista previa">
+                        <div id="previewContainer" class="img-preview-box" style="display: none; text-align: center; margin-top: 15px;">
+                            <img id="imgFormPreview" src="" alt="Vista previa" style="max-width: 100%; max-height: 200px; border-radius: 8px;">
                         </div>
                     </div>
 
                     <div class="step-actions">
-                        <button type="button" class="btn-prev" onclick="cambiarPaso(2)">&larr; Atrás</button>
-                        <button type="button" class="btn-next" onclick="generarFacturaPaso4()">Siguiente Paso &rarr;</button>
+                        <button type="button" class="btn-prev" id="btnVolverAlPaso2">&larr; Atrás</button>
+                        <button type="button" class="btn-next" id="btnPasarAlPaso4">Siguiente Paso &rarr;</button>
                     </div>
                 </div>
 
@@ -197,26 +205,26 @@
                         </label>
                     </div>
 
-                    <div class="invoice-box">
-                        <p>Monto final a transferir: <strong id="montoFinalLabel">RD$ 1,500</strong></p>
+                    <div class="invoice-box" style="margin: 20px 0; padding: 15px; background: #f1f5f9; border-radius: 8px;">
+                        <p style="margin:0; font-size:16px;">Monto final a transferir: <strong id="montoFinalLabel" style="color:#2563eb; font-size:18px;">RD$ 1,500</strong></p>
                     </div>
 
-                    <div class="bank-details-card">
-                        <h5>🏦 Cuenta de Depósito de Activación:</h5>
-                        <p><strong>Banco:</strong> Banco Popular Dominicano</p>
-                        <p><strong>Tipo:</strong> Cuenta Corriente</p>
-                        <p><strong>Número:</strong> 794561230</p>
-                        <p><strong>Nombre:</strong> DeporteRD S.R.L.</p>
+                    <div class="bank-details-card" style="padding: 15px; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; margin-bottom: 20px;">
+                        <h5 style="margin:0 0 10px 0; color:#1e40af;">🏦 Cuenta de Depósito de Activación:</h5>
+                        <p style="margin:3px 0;"><strong>Banco:</strong> Banco Popular Dominicano</p>
+                        <p style="margin:3px 0;"><strong>Tipo:</strong> Cuenta Corriente</p>
+                        <p style="margin:3px 0;"><strong>Número:</strong> 794561230</p>
+                        <p style="margin:3px 0;"><strong>Nombre:</strong> DeporteRD S.R.L.</p>
                     </div>
 
-                    <div class="form-group style-file-receipt">
+                    <div class="form-group">
                         <label>Adjunta tu captura o foto del comprobante de transferencia *</label>
                         <input type="file" id="formComprobante" accept="image/*" required>
                     </div>
 
                     <div class="step-actions">
-                        <button type="button" class="btn-prev" onclick="cambiarPaso(3)">&larr; Atrás</button>
-                        <button type="submit" class="btn-finalizar">🚀 Publicar Anuncio en Vivo</button>
+                        <button type="button" class="btn-prev" id="btnVolverAlPaso3">&larr; Atrás</button>
+                        <button type="submit" class="btn-finalizar" style="background:#22c55e; color:white;">🚀 Publicar Anuncio en Vivo</button>
                     </div>
                 </div>
 
