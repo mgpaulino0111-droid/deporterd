@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeporteRD - El Marketplace Deportivo de República Dominicana</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="logo-section">
+                <span class="logo-icon">🛍️</span>
+                <h1 class="logo">Deporte<span>RD</span></h1>
+            </div>
+            <button class="btn-publicar" id="btnPublicar">+ Publicar Artículo</button>
+        </div>
+    </header>
+
+    <section class="hero-banner">
+        <div class="hero-content">
+            <h2>El marketplace deportivo<br>de República Dominicana</h2>
+            <p>Compra y vende artículos deportivos cerca de ti.</p>
+            
+            <div class="search-container">
+                <span class="icon-input">🔍</span>
+                <input type="text" id="searchInput" placeholder="Busca por deporte, marca o artículo...">
+                <button id="btnBuscar">Buscar</button>
+            </div>
+
+            <div class="tags-container">
+                <button class="tag-btn active" data-cat="Todos">Todos</button>
+                <button class="tag-btn" data-cat="Bicicletas">Bicicletas</button>
+                <button class="tag-btn" data-cat="Pádel">Pádel</button>
+                <button class="tag-btn" data-cat="Tenis">Tenis</button>
+                <button class="tag-btn" data-cat="Béisbol">Béisbol</button>
+                <button class="tag-btn" data-cat="Otros">Otros</button>
+            </div>
+        </div>
+    </section>
+
+    <main class="main-content">
+        <h2 class="section-title">Artículos Destacados</h2>
+        <div class="products-grid" id="productsGrid">
+            </div>
+    </main>
+
+    <div class="modal-overlay" id="modalPublicar">
+        <div class="modal-card">
+            <button class="btn-close" id="btnCerrarModal">&times;</button>
+            
+            <div class="progress-steps-bar">
+                <div class="step-indicator active" id="ind-1"><span>1</span> Vendedor</div>
+                <div class="step-indicator" id="ind-2"><span>2</span> Artículo</div>
+                <div class="step-indicator" id="ind-3"><span>3</span> Multimedia</div>
+                <div class="step-indicator" id="ind-4"><span>4</span> Plan y Pago</div>
+            </div>
+
+            <form id="flujoPublicarForm">
+                
+                <div id="step-vendedor" class="step-content active">
+                    <h3 class="step-title">Información del Vendedor</h3>
+                    <p class="step-subtitle">Introduce tus datos de contacto para que los compradores te escriban.</p>
+                    
+                    <div class="form-group">
+                        <label>Nombre Completo *</label>
+                        <input type="text" id="formVendedor" placeholder="Ej. Melvin Paulino" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>WhatsApp / Celular (Sin guiones) *</label>
+                            <input type="tel" id="formWhatsapp" placeholder="Ej. 18095551234" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Provincia / Localización *</label>
+                            <select id="formProvincia" required>
+                                <option value="Santo Domingo">Santo Domingo (DN)</option>
+                                <option value="Santiago">Santiago</option>
+                                <option value="La Altagracia">La Altagracia (Punta Cana)</option>
+                                <option value="La Romana">La Romana</option>
+                                <option value="San Cristóbal">San Cristóbal</option>
+                                <option value="Puerto Plata">Puerto Plata</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Correo Electrónico *</label>
+                        <input type="email" id="formEmail" placeholder="ejemplo@correo.com" required>
+                    </div>
+                    
+                    <div class="step-actions">
+                        <button type="button" class="btn-next" onclick="cambiarPaso(2)">Siguiente Paso &rarr;</button>
+                    </div>
+                </div>
+
+                <div id="step-articulo" class="step-content">
+                    <h3 class="step-title">Detalles del Artículo Deportivo</h3>
+                    <p class="step-subtitle">Describe las especificaciones técnicas de lo que vas a vender.</p>
+                    
+                    <div class="form-group">
+                        <label>Título del Anuncio *</label>
+                        <input type="text" id="formTitulo" placeholder="Ej. Pala de Pádel Babolat Technical Viper 2024" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Marca *</label>
+                            <input type="text" id="formMarca" placeholder="Ej. Babolat, Wilson, Trek" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Precio (RD$) *</label>
+                            <input type="number" id="formPrecio" placeholder="Ej. 14500" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Categoría *</label>
+                            <select id="formCategoria" required>
+                                <option value="Pádel">Pádel</option>
+                                <option value="Bicicletas">Bicicletas</option>
+                                <option value="Tenis">Tenis</option>
+                                <option value="Béisbol">Béisbol</option>
+                                <option value="Otros">Otros</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Condición *</label>
+                            <select id="formCondicion" required>
+                                <option value="Nueva">Nueva</option>
+                                <option value="Usado - Como nueva">Usado - Como nueva</option>
+                                <option value="Usado">Usado</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="step-actions">
+                        <button type="button" class="btn-prev" onclick="cambiarPaso(1)">&larr; Atrás</button>
+                        <button type="button" class="btn-next" onclick="cambiarPaso(3)">Siguiente Paso &rarr;</button>
+                    </div>
+                </div>
+
+                <div id="step-multimedia" class="step-content">
+                    <h3 class="step-title">Fotos del Artículo</h3>
+                    <p class="step-subtitle">Sube una foto clara de buena calidad para atraer clientes.</p>
+                    
+                    <div class="upload-zone">
+                        <label for="formImg" class="custom-upload-label">
+                            <span class="upload-big-icon">📷</span>
+                            <p>Haz clic para seleccionar la foto desde tu galería</p>
+                        </label>
+                        <input type="file" id="formImg" accept="image/*" required>
+                        <div id="previewContainer" class="img-preview-box" style="display: none;">
+                            <img id="imgFormPreview" src="" alt="Vista previa">
+                        </div>
+                    </div>
+
+                    <div class="step-actions">
+                        <button type="button" class="btn-prev" onclick="cambiarPaso(2)">&larr; Atrás</button>
+                        <button type="button" class="btn-next" onclick="generarFacturaPaso4()">Siguiente Paso &rarr;</button>
+                    </div>
+                </div>
+
+                <div id="step-pago" class="step-content">
+                    <h3 class="step-title">Selecciona tu Plan de Publicación</h3>
+                    <p class="step-subtitle">Elige cómo quieres que destaque tu anuncio en DeporteRD.</p>
+                    
+                    <div class="planes-selector-grid">
+                        <label class="plan-card-opt border-regular">
+                            <input type="radio" name="planRadio" value="Regular" data-price="1500" checked>
+                            <div class="plan-card-inner">
+                                <span class="p-badge regular">Estándar</span>
+                                <h4>Plan Regular</h4>
+                                <p>Visible en la rejilla general por 30 días enteros.</p>
+                                <p class="p-price">RD$ 1,500</p>
+                            </div>
+                        </label>
+
+                        <label class="plan-card-opt border-destacado">
+                            <input type="radio" name="planRadio" value="Destacado" data-price="3250">
+                            <div class="plan-card-inner">
+                                <span class="p-badge destacado">¡Más vendido!</span>
+                                <h4>Plan Destacado</h4>
+                                <p>Borde azul brillante, prioridad alta y 25% más ventas.</p>
+                                <p class="p-price">RD$ 3,250</p>
+                            </div>
+                        </label>
+
+                        <label class="plan-card-opt border-premium">
+                            <input type="radio" name="planRadio" value="Premium" data-price="7000">
+                            <div class="plan-card-inner">
+                                <span class="p-badge premium">VVIP</span>
+                                <h4>Plan Premium</h4>
+                                <p>Fijado en la parte superior de la Portada Principal.</p>
+                                <p class="p-price">RD$ 7,000</p>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="invoice-box">
+                        <p>Monto final a transferir: <strong id="montoFinalLabel">RD$ 1,500</strong></p>
+                    </div>
+
+                    <div class="bank-details-card">
+                        <h5>🏦 Cuenta de Depósito de Activación:</h5>
+                        <p><strong>Banco:</strong> Banco Popular Dominicano</p>
+                        <p><strong>Tipo:</strong> Cuenta Corriente</p>
+                        <p><strong>Número:</strong> 794561230</p>
+                        <p><strong>Nombre:</strong> DeporteRD S.R.L.</p>
+                    </div>
+
+                    <div class="form-group style-file-receipt">
+                        <label>Adjunta tu captura o foto del comprobante de transferencia *</label>
+                        <input type="file" id="formComprobante" accept="image/*" required>
+                    </div>
+
+                    <div class="step-actions">
+                        <button type="button" class="btn-prev" onclick="cambiarPaso(3)">&larr; Atrás</button>
+                        <button type="submit" class="btn-finalizar">🚀 Publicar Anuncio en Vivo</button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
