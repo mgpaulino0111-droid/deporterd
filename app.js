@@ -1,14 +1,14 @@
 document.addEventListener('DOMContentLoaded', () => {
     
+    // 13 Deportes oficiales exactos
     const listaDeportes = [
-        "Pádel", "Béisbol", "Baloncesto", "Fútbol", "Bicicletas", "Tenis", "Gym & Fitness",
-        "Voleibol", "Softbol", "Natación", "Boxeo / MMA", "Running", "Golf", "Skate / Surf",
-        "Otros Deportes"
+        "Pádel", "Béisbol", "Baloncesto", "Fútbol", "Bicicletas", "Tenis de Campo", "Gym & Fitness",
+        "Voleibol", "Softbol", "Natación", "Boxeo / MMA", "Running", "Otros Deportes"
     ];
 
     const tiposArticulos = ["Equipamiento / Herramienta Principal", "Calzado / Tenis", "Ropa Deportiva", "Accesorios / Grips / Extras"];
 
-    // BASE DE DATOS EXTENDIDA DE MARCAS RESTAURADA
+    // Base de datos de marcas mapeada correctamente a las 13 categorías
     const marcasPorTipo = {
         "Equipamiento / Herramienta Principal": {
             "Pádel": ["Siux", "Babolat", "Nox", "Adidas", "Bullpadel", "Head", "StarVie", "Drop Shot"],
@@ -16,9 +16,13 @@ document.addEventListener('DOMContentLoaded', () => {
             "Baloncesto": ["Spalding", "Wilson", "Molten", "Nike"],
             "Fútbol": ["Adidas", "Nike", "Puma", "Penalty", "Mitre"],
             "Bicicletas": ["Trek", "Specialized", "Giant", "Cannondale", "Scott", "Shimano"],
-            "Tenis": ["Wilson", "BabolaT", "Head", "Yonex", "Prince", "Dunlop"],
+            "Tenis de Campo": ["Wilson", "Babolat", "Head", "Yonex", "Prince", "Dunlop"],
             "Gym & Fitness": ["Rogue Fitness", "Bowflex", "Everlast", "Cap Barbell", "Matrix"],
             "Softbol": ["Rawlings", "DeMarini", "Worth", "Mizuno"],
+            "Voleibol": ["Mikasa", "Molten", "Wilson", "Asics"],
+            "Natación": ["Speedo", "Arena", "TYR", "Cressi"],
+            "Boxeo / MMA": ["Everlast", "Venum", "Cleto Reyes", "Hayabusa"],
+            "Running": ["Nike", "Asics", "Brooks", "Saucony", "Hoka", "New Balance"],
             "Otros Deportes": ["Marcas Variadas", "Genérico"]
         },
         "Calzado / Tenis": { 
@@ -48,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalDetalle = document.getElementById('modalDetalle');
     const btnCerrarDetalle = document.getElementById('btnCerrarDetalle');
 
-    // PASOS DEL FORMULARIO
+    // PASOS DEL FORMULARIO FLOTANTE
     const stepVendedor = document.getElementById('step-vendedor');
     const stepArticulo = document.getElementById('step-articulo');
     const stepMultimedia = document.getElementById('step-multimedia');
@@ -65,8 +69,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const errorStep2 = document.getElementById('error-step-2');
     const errorStep3 = document.getElementById('error-step-3');
     const errorStep4 = document.getElementById('error-step-4');
-    const modalExitoNativo = document.getElementById('modalExitoNativo');
-    const btnCerrarExito = document.getElementById('btnCerrarExito');
 
     const inputImg = document.getElementById('formImg');
     const previewMultiGrid = document.getElementById('previewMultiGrid');
@@ -77,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let base64ImagesArray = [];
 
-    // ARTÍCULOS BASE RESTAURADOS
+    // ARTÍCULO BASE POR DEFECTO EN CASO DE LOCALSTORAGE VACÍO
     const mockCloudDatabase = [
         { 
             id: 1, 
@@ -93,91 +95,111 @@ document.addEventListener('DOMContentLoaded', () => {
             imagenes: ["https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=500"], 
             plan: "Premium", 
             esEliminable: false 
-        },
-        { 
-            id: 2, 
-            titulo: "Bate Rawlings Mach AI", 
-            categoria: "Béisbol", 
-            tipo: "Equipamiento / Herramienta Principal", 
-            marca: "Rawlings", 
-            precio: 8500, 
-            condicion: "Nueva", 
-            vendedor: "Miguel Paulino", 
-            provincia: "Santiago", 
-            whatsapp: "18098889876", 
-            imagenes: ["https://images.unsplash.com/photo-1530541930197-ff16ac917b0e?w=500"], 
-            plan: "Destacado", 
-            esEliminable: false 
         }
     ];
 
-    let baseDeDatosActual = JSON.parse(localStorage.getItem('deporterd_database_live')) || mockCloudDatabase;
+    // INICIALIZACIÓN SÓLIDA DE LA BASE DE DATOS LOCAL
+    let baseDeDatosActual = JSON.parse(localStorage.getItem('deporterd_database_live'));
+    if (!baseDeDatosActual || !Array.isArray(baseDeDatosActual)) {
+        baseDeDatosActual = mockCloudDatabase;
+        localStorage.setItem('deporterd_database_live', JSON.stringify(baseDeDatosActual));
+    }
+
     let categoriaSeleccionada = "Todos";
 
-    // CARGAR CATEGORÍAS EN SELECT
+    // CARGAR LAS 13 CATEGORÍAS EN EL SELECT AL INICIAR
     if (selectCategoria) {
         selectCategoria.innerHTML = '<option value="">-- Selecciona Deporte --</option>';
         listaDeportes.forEach(dep => {
-            const opt = document.createElement('option');
-            opt.value = dep; opt.innerText = dep;
-            selectCategoria.appendChild(opt);
+            selectCategoria.appendChild(new Option(dep, dep));
         });
     }
 
-    // GESTIÓN DE APERTURA/CIERRE DE MODALES
-    if (btnPublicar) btnPublicar.addEventListener('click', () => modalPublicar.style.display = 'flex');
-    if (btnCerrarModal) btnCerrarModal.addEventListener('click', () => modalPublicar.style.display = 'none');
-    if (btnCerrarDetalle) btnCerrarDetalle.addEventListener('click', () => modalDetalle.style.display = 'none');
+    // CONTROL DE VISIBILIDAD DE MODALES PRINCIPALES
+    if (btnPublicar) btnPublicar.addEventListener('click', () => { modalPublicar.style.display = 'flex'; });
+    if (btnCerrarModal) btnCerrarModal.addEventListener('click', () => { modalPublicar.style.display = 'none'; });
+    if (btnCerrarDetalle) btnCerrarDetalle.addEventListener('click', () => { modalDetalle.style.display = 'none'; });
 
+    // FLUJO VISUAL PASO A PASO
     function cambiarAUnPaso(num) {
-        [stepVendedor, stepArticulo, stepMultimedia, stepPago].forEach(s => s.classList.remove('active'));
-        ['ind-1', 'ind-2', 'ind-3', 'ind-4'].forEach(id => document.getElementById(id).classList.remove('active'));
+        const pasos = [stepVendedor, stepArticulo, stepMultimedia, stepPago];
+        const indicadores = ['ind-1', 'ind-2', 'ind-3', 'ind-4'];
 
-        if (num === 1) { stepVendedor.classList.add('active'); document.getElementById('ind-1').classList.add('active'); }
-        if (num === 2) { stepArticulo.classList.add('active'); document.getElementById('ind-2').classList.add('active'); }
-        if (num === 3) { stepMultimedia.classList.add('active'); document.getElementById('ind-3').classList.add('active'); }
-        if (num === 4) { stepPago.classList.add('active'); document.getElementById('ind-4').classList.add('active'); }
+        pasos.forEach(s => { if(s) s.classList.remove('active'); });
+        indicadores.forEach(id => { 
+            const el = document.getElementById(id);
+            if(el) el.classList.remove('active'); 
+        });
+
+        if (num === 1 && stepVendedor) { stepVendedor.classList.add('active'); document.getElementById('ind-1')?.classList.add('active'); }
+        if (num === 2 && stepArticulo) { stepArticulo.classList.add('active'); document.getElementById('ind-2')?.classList.add('active'); }
+        if (num === 3 && stepMultimedia) { stepMultimedia.classList.add('active'); document.getElementById('ind-3')?.classList.add('active'); }
+        if (num === 4 && stepPago) { stepPago.classList.add('active'); document.getElementById('ind-4')?.classList.add('active'); }
     }
 
-    // NAVEGACIÓN PASO A PASO CON VALIDACIONES INLINE
+    // VALIDACIÓN Y AVANCE - PASO 1
     if (btnPasarAlPaso2) {
         btnPasarAlPaso2.addEventListener('click', () => {
-            if (!document.getElementById('formVendedor').value.trim() || !document.getElementById('formWhatsapp').value.trim() || !document.getElementById('formEmail').value.trim()) {
-                errorStep1.innerText = "Por favor, completa todos los campos obligatorios del vendedor."; errorStep1.style.display = 'flex'; return;
+            const vend = document.getElementById('formVendedor').value.trim();
+            const tel = document.getElementById('formWhatsapp').value.trim();
+            const mail = document.getElementById('formEmail').value.trim();
+
+            if (!vend || !tel || !mail) {
+                if(errorStep1) { errorStep1.innerText = "Por favor, completa todos los campos del vendedor."; errorStep1.style.display = 'flex'; }
+                return;
             }
-            errorStep1.style.display = 'none'; cambiarAUnPaso(2);
+            if(errorStep1) errorStep1.style.display = 'none'; 
+            cambiarAUnPaso(2);
         });
     }
     if (btnVolverAlPaso1) btnVolverAlPaso1.addEventListener('click', () => cambiarAUnPaso(1));
 
+    // VALIDACIÓN Y AVANCE - PASO 2 (DETALLES TÉCNICOS CORREGIDOS)
     if (btnPasarAlPaso3) {
         btnPasarAlPaso3.addEventListener('click', () => {
-            const modFinal = (selectModelo.value === "Escribir modelo...") ? inputModeloManual.value.trim() : selectModelo.value;
-            if (!selectCategoria.value || !selectTipo.value || !selectMarca.value || !modFinal || !document.getElementById('formPrecio').value) {
-                errorStep2.innerText = "Todos los campos de detalles técnicos son estrictamente obligatorios."; errorStep2.style.display = 'flex'; return;
+            const necesitaManual = (selectMarca.value === "Otra marca..." || selectModelo.value === "Escribir modelo..." || selectTipo.value !== "Equipamiento / Herramienta Principal");
+            const textoManual = inputModeloManual.value.trim();
+            const precio = document.getElementById('formPrecio').value.trim();
+
+            if (!selectCategoria.value || !selectTipo.value || !selectMarca.value || !precio) {
+                if(errorStep2) { errorStep2.innerText = "Por favor, completa los campos obligatorios de categoría, marca y precio."; errorStep2.style.display = 'flex'; }
+                return;
             }
-            errorStep2.style.display = 'none'; cambiarAUnPaso(3);
+
+            if (necesitaManual && !textoManual) {
+                if(errorStep2) { errorStep2.innerText = "Por favor, escribe el modelo o descripción del artículo en el campo de texto manual."; errorStep2.style.display = 'flex'; }
+                return;
+            }
+
+            if(errorStep2) errorStep2.style.display = 'none'; 
+            cambiarAUnPaso(3);
         });
     }
     if (btnVolverAlPaso2) btnVolverAlPaso2.addEventListener('click', () => cambiarAUnPaso(2));
 
+    // VALIDACIÓN Y AVANCE - PASO 3 (MULTIMEDIA)
     if (btnPasarAlPaso4) {
         btnPasarAlPaso4.addEventListener('click', () => {
             if (base64ImagesArray.length === 0) {
-                errorStep3.innerText = "Sube al menos 1 foto real de tu artículo deportivo."; errorStep3.style.display = 'flex'; return;
+                if(errorStep3) { errorStep3.innerText = "Sube al menos 1 foto real de tu artículo deportivo."; errorStep3.style.display = 'flex'; }
+                return;
             }
-            errorStep3.style.display = 'none'; cambiarAUnPaso(4);
+            if(errorStep3) errorStep3.style.display = 'none'; 
+            cambiarAUnPaso(4);
         });
     }
     if (btnVolverAlPaso3) btnVolverAlPaso3.addEventListener('click', () => cambiarAUnPaso(3));
 
-    // CARGA Y PREVISUALIZACIÓN DE FOTOS MULTIPLES
+    // PROCESAMIENTO MULTIPLE DE IMÁGENES A BASE64
     if (inputImg) {
         inputImg.addEventListener('change', () => {
             Array.from(inputImg.files).forEach(file => {
                 if (base64ImagesArray.length >= 3) return;
                 const r = new FileReader();
-                r.onload = (e) => { base64ImagesArray.push(e.target.result); actualizarGridImagenes(); };
+                r.onload = (e) => { 
+                    base64ImagesArray.push(e.target.result); 
+                    actualizarGridImagenes(); 
+                };
                 r.readAsDataURL(file);
             });
             inputImg.value = "";
@@ -185,12 +207,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function actualizarGridImagenes() {
+        if (!previewMultiGrid) return;
         previewMultiGrid.innerHTML = "";
         base64ImagesArray.forEach((src, idx) => {
-            const card = document.createElement('div'); card.className = "modern-preview-card";
+            const card = document.createElement('div'); 
+            card.className = "modern-preview-card";
             card.innerHTML = `<img src="${src}"><button type="button" class="btn-delete-image-floating" data-idx="${idx}">🗑️</button>`;
             previewMultiGrid.appendChild(card);
         });
+        
         document.querySelectorAll('.btn-delete-image-floating').forEach(b => {
             b.addEventListener('click', (e) => {
                 base64ImagesArray.splice(parseInt(e.target.getAttribute('data-idx')), 1);
@@ -199,11 +224,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // MENÚS EN CASCADA COMPLETO
+    // DINÁMICA DE MENÚS DESPLEGABLES EN CASCADA
     if (selectCategoria) {
         selectCategoria.addEventListener('change', () => {
-            selectTipo.innerHTML = '<option value="">-- Selecciona Tipo --</option>'; selectMarca.innerHTML = '<option value="">-- Elige Tipo --</option>'; selectModelo.innerHTML = '<option value="">-- Elige Marca --</option>';
-            selectMarca.disabled = true; selectModelo.disabled = true; wrapperModeloManual.style.display = "none";
+            selectTipo.innerHTML = '<option value="">-- Selecciona Tipo --</option>'; 
+            selectMarca.innerHTML = '<option value="">-- Elige Tipo --</option>'; 
+            selectModelo.innerHTML = '<option value="">-- Elige Marca --</option>';
+            selectMarca.disabled = true; selectModelo.disabled = true; 
+            if(wrapperModeloManual) wrapperModeloManual.style.display = "none";
+            
             if (selectCategoria.value) {
                 selectTipo.disabled = false;
                 tiposArticulos.forEach(t => selectTipo.appendChild(new Option(t, t)));
@@ -213,8 +242,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (selectTipo) {
         selectTipo.addEventListener('change', () => {
-            selectMarca.innerHTML = '<option value="">-- Selecciona Marca --</option>'; selectModelo.innerHTML = '<option value="">-- Elige Marca --</option>';
-            selectModelo.disabled = true; wrapperModeloManual.style.display = "none";
+            selectMarca.innerHTML = '<option value="">-- Selecciona Marca --</option>'; 
+            selectModelo.innerHTML = '<option value="">-- Elige Marca --</option>';
+            selectModelo.disabled = true; 
+            if(wrapperModeloManual) wrapperModeloManual.style.display = "none";
             if (!selectTipo.value) { selectMarca.disabled = true; return; }
             selectMarca.disabled = false;
             
@@ -229,11 +260,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (selectMarca) {
         selectMarca.addEventListener('change', () => {
-            if (!selectMarca.value) { selectModelo.disabled = true; wrapperModeloManual.style.display = "none"; return; }
-            if (selectMarca.value === "Otra marca...") {
-                wrapperModeloManual.style.display = "block"; inputModeloManual.placeholder = "Escribe la Marca y el Modelo aquí..."; selectModelo.disabled = true;
+            if (!selectMarca.value) { selectModelo.disabled = true; if(wrapperModeloManual) wrapperModeloManual.style.display = "none"; return; }
+            
+            if (selectMarca.value === "Otra marca..." || selectTipo.value !== "Equipamiento / Herramienta Principal") {
+                if(wrapperModeloManual) {
+                    wrapperModeloManual.style.display = "block"; 
+                    inputModeloManual.value = ""; 
+                    inputModeloManual.placeholder = "Escribe la marca y el modelo exacto aquí...";
+                }
+                selectModelo.disabled = true;
             } else {
-                selectModelo.disabled = false; wrapperModeloManual.style.display = "none";
+                selectModelo.disabled = false; 
+                if(wrapperModeloManual) wrapperModeloManual.style.display = "none";
                 selectModelo.innerHTML = '<option value="">-- Elige Opción --</option><option value="Escribir modelo...">✍️ Escribir modelo manualmente...</option>';
             }
         });
@@ -241,68 +279,101 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (selectModelo) {
         selectModelo.addEventListener('change', () => {
-            wrapperModeloManual.style.display = (selectModelo.value === "Escribir modelo...") ? "block" : "none";
-            if (selectModelo.value === "Escribir modelo...") inputModeloManual.placeholder = "Escribe el modelo exacto aquí...";
+            if(wrapperModeloManual) {
+                wrapperModeloManual.style.display = (selectModelo.value === "Escribir modelo...") ? "block" : "none";
+                if (selectModelo.value === "Escribir modelo...") { inputModeloManual.value = ""; inputModeloManual.placeholder = "Escribe el modelo exacto aquí..."; }
+            }
         });
     }
 
-    // MANEJO DE PRECIOS DINÁMICOS DEL PLAN SELECCIONADO
+    // INTERFAZ DE PRECIOS SEGÚN EL PLAN
     document.getElementsByName('planRadio').forEach(r => {
         r.addEventListener('change', (e) => {
-            document.getElementById('montoFinalLabel').innerText = `RD$ ${parseFloat(e.target.getAttribute('data-price')).toLocaleString()}`;
+            const label = document.getElementById('montoFinalLabel');
+            if(label) label.innerText = `RD$ ${parseFloat(e.target.getAttribute('data-price')).toLocaleString()}`;
         });
     });
 
-    // GUARDADO FINAL CORRECTO DEL ANUNCIO
+    // GUARDADO FINAL COMPLETO CON MODAL PROPIO (Sustituye por completo al Alert)
     if (flujoForm) {
         flujoForm.addEventListener('submit', (e) => {
             e.preventDefault();
             
             const fileComp = document.getElementById('formComprobante').files[0];
-            if (!fileComp) { errorStep4.innerText = "Debes adjuntar el comprobante o captura de tu transferencia bancaria."; errorStep4.style.display = 'flex'; return; }
-            errorStep4.style.display = 'none';
+            if (!fileComp) { 
+                if (errorStep4) { errorStep4.innerText = "Debes adjuntar el comprobante o captura de tu transferencia bancaria."; errorStep4.style.display = 'flex'; }
+                return; 
+            }
+            if (errorStep4) errorStep4.style.display = 'none';
 
             let mkF = selectMarca.value;
             let modF = selectModelo.value;
-            if (mkF === "Otra marca...") { mkF = "Variada"; modF = inputModeloManual.value.trim(); }
-            else if (modF === "Escribir modelo...") { modF = inputModeloManual.value.trim(); }
+            
+            if (mkF === "Otra marca..." || selectTipo.value !== "Equipamiento / Herramienta Principal") { 
+                if(mkF === "Otra marca...") { mkF = "Variada"; }
+                modF = inputModeloManual.value.trim(); 
+            } else if (modF === "Escribir modelo...") { 
+                modF = inputModeloManual.value.trim(); 
+            }
+
+            if (!modF) { modF = "Genérico"; }
+
+            const copiaImagenes = [...base64ImagesArray];
+            const imagenesFinales = copiaImagenes.length > 0 ? copiaImagenes : ["https://images.unsplash.com/photo-1517649763962-0c623066013b?w=500"];
+            const planSeleccionado = document.querySelector('input[name="planRadio"]:checked')?.value || "Básico";
 
             const nuevoAnuncio = {
                 id: Date.now(),
                 titulo: `${mkF} ${modF}`,
                 marca: mkF,
                 tipo: selectTipo.value,
-                precio: parseFloat(document.getElementById('formPrecio').value),
+                precio: parseFloat(document.getElementById('formPrecio').value) || 0,
                 categoria: selectCategoria.value,
                 condicion: document.getElementById('formCondicion').value,
                 vendedor: document.getElementById('formVendedor').value,
                 provincia: document.getElementById('formProvincia').value,
                 whatsapp: document.getElementById('formWhatsapp').value,
-                imagenes: [...base64ImagesArray],
-                plan: document.querySelector('input[name="planRadio"]:checked').value,
+                imagenes: imagenesFinales,
+                plan: planSeleccionado,
                 esEliminable: true
             };
 
+            // Guardar en array y actualizar LocalStorage inmediatamente
             baseDeDatosActual.unshift(nuevoAnuncio);
             localStorage.setItem('deporterd_database_live', JSON.stringify(baseDeDatosActual));
             
+            // LIMPIEZA ABSOLUTA DE CACHÉ DE SUBIDA
             base64ImagesArray = [];
-            actualizarGridImagenes();
+            if (previewMultiGrid) previewMultiGrid.innerHTML = "";
+            
+            // Renderizar la portada con los nuevos cambios en segundo plano
             renderizarProductos();
             
-            modalPublicar.style.display = 'none';
-            modalExitoNativo.style.display = 'flex';
+            // CIERRE INMEDIATO DEL MODAL DE PUBLICACIÓN (Evita que se tranque)
+            if (modalPublicar) modalPublicar.style.display = 'none';
+            
+            // Reajustar el formulario a blanco y devolver al Paso 1
+            flujoForm.reset();
+            if (wrapperModeloManual) wrapperModeloManual.style.display = "none"; 
+            cambiarAUnPaso(1);
+
+            // ACTIVAR NUEVO MODAL ESTÉTICO PROPIO (Adiós al aviso gris de Google)
+            const modalExitoPropio = document.getElementById('modalExitoPropio');
+            const btnCerrarExitoPropio = document.getElementById('btnCerrarExitoPropio');
+            
+            if (modalExitoPropio) {
+                modalExitoPropio.style.display = 'flex';
+            }
+
+            if (btnCerrarExitoPropio) {
+                btnCerrarExitoPropio.addEventListener('click', () => {
+                    modalExitoPropio.style.display = 'none';
+                });
+            }
         });
     }
 
-    if (btnCerrarExito) {
-        btnCerrarExito.addEventListener('click', () => {
-            modalExitoNativo.style.display = 'none'; flujoForm.reset();
-            wrapperModeloManual.style.display = "none"; cambiarAUnPaso(1);
-        });
-    }
-
-    // LOGICA DE DETALLES CON GALERÍA DE IMÁGENES COMPLETA
+    // VER VENTANA DETALLADA DE UN ARTÍCULO
     function verDetallesProducto(id) {
         const prod = baseDeDatosActual.find(x => x.id === id);
         if (!prod) return;
@@ -316,29 +387,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const linkWp = document.getElementById('det-whatsapp-link');
         const txtMsg = encodeURIComponent(`Hola ${prod.vendedor}, me interesa tu "${prod.titulo}" en DeporteRD.`);
-        linkWp.href = `https://wa.me/${prod.whatsapp}?text=${txtMsg}`;
+        if(linkWp) linkWp.href = `https://wa.me/${prod.whatsapp}?text=${txtMsg}`;
 
         const imgPrincipal = document.getElementById('det-img-main');
         const miniGrid = document.getElementById('det-mini-grid');
-        miniGrid.innerHTML = "";
+        if(miniGrid) miniGrid.innerHTML = "";
 
         const fotos = (prod.imagenes && prod.imagenes.length > 0) ? prod.imagenes : ["https://images.unsplash.com/photo-1517649763962-0c623066013b?w=500"];
-        imgPrincipal.src = fotos[0];
+        if(imgPrincipal) imgPrincipal.src = fotos[0];
 
         fotos.forEach((f, index) => {
             const imgMini = document.createElement('img'); imgMini.src = f;
             if (index === 0) imgMini.className = "active";
             imgMini.addEventListener('click', () => {
                 document.querySelectorAll('.detalle-miniaturas img').forEach(m => m.classList.remove('active'));
-                imgMini.className = "active"; imgPrincipal.src = f;
+                imgMini.className = "active"; if(imgPrincipal) imgPrincipal.src = f;
             });
-            miniGrid.appendChild(imgMini);
+            if(miniGrid) miniGrid.appendChild(imgMini);
         });
 
-        modalDetalle.style.display = "flex";
+        if(modalDetalle) modalDetalle.style.display = "flex";
     }
 
-    // RENDERIZADO COMPLETO DE TARJETAS EN PORTADA
+    // RENDERIZADO SÓLIDO EN PORTADA DE ARTÍCULOS
     function renderizarProductos() {
         if (!productsGrid) return;
         productsGrid.innerHTML = '';
@@ -351,7 +422,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         if(filtrados.length === 0) {
-            productsGrid.innerHTML = `<p style="grid-column:1/-1; text-align:center; padding:40px; color:#64748b;">No hay artículos deportivos disponibles en esta categoría.</p>`; return;
+            productsGrid.innerHTML = `<p style="grid-column:1/-1; text-align:center; padding:40px; color:#64748b;">No hay artículos deportivos disponibles en esta categoría.</p>`; 
+            return;
         }
 
         filtrados.forEach(art => {
@@ -378,10 +450,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             `;
             
-            // Clic en la tarjeta abre el panel de detalles
             tarjeta.addEventListener('click', () => verDetallesProducto(art.id));
 
-            // Clic en la equis borra el producto sin abrir el panel de detalles
+            // Botón de eliminar directo sin trabas
             const bDel = tarjeta.querySelector('.btn-eliminar-anuncio');
             if (bDel) {
                 bDel.addEventListener('click', (e) => {
@@ -396,11 +467,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // MANEJO DE FILTROS POR BOTÓN (TAGS)
     if (tags) {
         tags.forEach(t => {
             t.addEventListener('click', () => {
                 document.querySelectorAll('.tag-btn').forEach(x => x.classList.remove('active'));
-                t.classList.add('active'); categoriaSeleccionada = t.getAttribute('data-cat'); renderizarProductos();
+                t.classList.add('active'); 
+                categoriaSeleccionada = t.getAttribute('data-cat'); 
+                renderizarProductos();
             });
         });
     }
@@ -408,5 +482,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnBuscar) btnBuscar.addEventListener('click', renderizarProductos);
     if (searchInput) searchInput.addEventListener('keyup', (e) => { if(e.key === 'Enter') renderizarProductos(); });
 
+    // Ejecución inicial limpia
     renderizarProductos();
 });
