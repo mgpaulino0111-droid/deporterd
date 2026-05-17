@@ -1,40 +1,34 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    // BASE DE DATOS TÉCNICA - 30+ DEPORTES
     const listaDeportes = [
         "Pádel", "Béisbol", "Baloncesto", "Fútbol", "Bicicletas", "Tenis", "Gym & Fitness",
         "Voleibol", "Softbol", "Natación", "Boxeo / MMA", "Running", "Golf", "Skate / Surf",
-        "Motociclismo", "Senderismo / Outdoor", "Ping Pong", "Billar", "Ciclismo Estacionario",
-        "Crossfit", "Yoga / Pilates", "Fútbol Americano", "Rugby", "Atletismo", "Artes Marciales",
-        "Pesca Deportiva", "Bolos", "Dardos", "Ajedrez", "Otros Deportes"
+        "Otros Deportes"
     ];
 
     const tiposArticulos = ["Equipamiento / Herramienta Principal", "Calzado / Tenis", "Ropa Deportiva", "Accesorios / Grips / Extras"];
 
+    // BASE DE DATOS EXTENDIDA DE MARCAS RESTAURADA
     const marcasPorTipo = {
         "Equipamiento / Herramienta Principal": {
             "Pádel": ["Siux", "Babolat", "Nox", "Adidas", "Bullpadel", "Head", "StarVie", "Drop Shot"],
-            "Béisbol": ["Rawlings", "Wilson", "Louisville Slugger", "Marucci", "Easton", "Mizuno", "Demarini"],
-            "Baloncesto": ["Spalding", "Wilson", "Molten", "Nike", "Under Armour"],
-            "Fútbol": ["Nike", "Adidas", "Puma", "Penalty", "Mitre", "Select"],
-            "Bicicletas": ["Trek", "Specialized", "Giant", "Cannondale", "Scott", "Santa Cruz", "GT"],
-            "Tenis": ["Wilson", "Babolat", "Head", "Yonex", "Prince", "Dunlop"],
-            "Gym & Fitness": ["Rogue Fitness", "Bowflex", "Everlast", "Cap Barbell", "Titan Fitness"],
-            "Voleibol": ["Mikasa", "Molten", "Tachikara", "Wilson"],
-            "Softbol": ["Miken", "Worth", "Rawlings", "Easton", "DeMarini"],
-            "Natación": ["Speedo", "Arena", "TYR", "MP Michael Phelps"],
-            "Boxeo / MMA": ["Everlast", "Cleto Reyes", "Venum", "Hayabusa", "Fairtex"],
-            "Golf": ["Callaway", "TaylorMade", "Titleist", "Ping", "Cobra", "Mizuno"],
+            "Béisbol": ["Rawlings", "Wilson", "Louisville Slugger", "Marucci", "Mizuno", "Easton"],
+            "Baloncesto": ["Spalding", "Wilson", "Molten", "Nike"],
+            "Fútbol": ["Adidas", "Nike", "Puma", "Penalty", "Mitre"],
+            "Bicicletas": ["Trek", "Specialized", "Giant", "Cannondale", "Scott", "Shimano"],
+            "Tenis": ["Wilson", "BabolaT", "Head", "Yonex", "Prince", "Dunlop"],
+            "Gym & Fitness": ["Rogue Fitness", "Bowflex", "Everlast", "Cap Barbell", "Matrix"],
+            "Softbol": ["Rawlings", "DeMarini", "Worth", "Mizuno"],
             "Otros Deportes": ["Marcas Variadas", "Genérico"]
         },
-        "Calzado / Tenis": {
-            "General": ["Nike", "Adidas", "Puma", "Under Armour", "Asics", "New balance", "Reebok", "Mizuno", "Jordan", "Skechers", "Babolat", "Nox", "Salomon"]
+        "Calzado / Tenis": { 
+            "General": ["Nike", "Adidas", "Puma", "Under Armour", "Asics", "New Balance", "Mizuno", "Reebok"] 
         },
-        "Ropa Deportiva": {
-            "General": ["Nike", "Adidas", "Puma", "Under Armour", "Reebok", "Columbia", "Gymshark", "Lululemon", "Fila", "Champion", "Asics"]
+        "Ropa Deportiva": { 
+            "General": ["Nike", "Adidas", "Puma", "Under Armour", "Reebok", "Columbia", "Gymshark"] 
         },
-        "Accesorios / Grips / Extras": {
-            "General": ["Garmin", "Apple", "Fitbit", "Everlast", "Mueller", "McDavid", "Tourna", "Wilson", "Babolat", "Alien Pros", "Genérico"]
+        "Accesorios / Grips / Extras": { 
+            "General": ["Garmin", "Apple", "Wilson", "Babolat", "Nox", "Nike", "Fitbit", "Genérico"] 
         }
     };
 
@@ -43,9 +37,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const selectTipo = document.getElementById('formTipo');
     const selectMarca = document.getElementById('formMarca');
     const selectModelo = document.getElementById('formModelo');
-    const inputTituloOculto = document.getElementById('formTitulo');
-    
-    // Nuevos elementos para Entrada Manual Integrada sin Prompts
     const wrapperModeloManual = document.getElementById('wrapperModeloManual');
     const inputModeloManual = document.getElementById('inputModeloManual');
 
@@ -54,6 +45,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnCerrarModal = document.getElementById('btnCerrarModal');
     const flujoForm = document.getElementById('flujoPublicarForm');
     
+    const modalDetalle = document.getElementById('modalDetalle');
+    const btnCerrarDetalle = document.getElementById('btnCerrarDetalle');
+
+    // PASOS DEL FORMULARIO
     const stepVendedor = document.getElementById('step-vendedor');
     const stepArticulo = document.getElementById('step-articulo');
     const stepMultimedia = document.getElementById('step-multimedia');
@@ -66,7 +61,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnPasarAlPaso4 = document.getElementById('btnPasarAlPaso4');
     const btnVolverAlPaso3 = document.getElementById('btnVolverAlPaso3');
 
-    // Alertas inline y de éxito
     const errorStep1 = document.getElementById('error-step-1');
     const errorStep2 = document.getElementById('error-step-2');
     const errorStep3 = document.getElementById('error-step-3');
@@ -74,294 +68,224 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalExitoNativo = document.getElementById('modalExitoNativo');
     const btnCerrarExito = document.getElementById('btnCerrarExito');
 
-    // Multimedia Multi-Imagen
     const inputImg = document.getElementById('formImg');
     const previewMultiGrid = document.getElementById('previewMultiGrid');
-
     const productsGrid = document.getElementById('productsGrid');
     const searchInput = document.getElementById('searchInput');
     const btnBuscar = document.getElementById('btnBuscar');
     const tags = document.querySelectorAll('.tag-btn');
 
-    // ARRAY PARA ALMACENAR HASTA 3 IMÁGENES BASE64
     let base64ImagesArray = [];
 
-    // STATE DE LA APLICACIÓN
+    // ARTÍCULOS BASE RESTAURADOS
     const mockCloudDatabase = [
-        { id: 1, titulo: "Siux ST3", categoria: "Pádel", tipo: "Equipamiento / Herramienta Principal", marca: "Siux", precio: 15500, condicion: "Usado - Como nueva", vendedor: "Carlos Martínez", provincia: "Santo Domingo", whatsapp: "18095551234", imagenes: ["https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=500"], plan: "Premium", esEliminable: false }
+        { 
+            id: 1, 
+            titulo: "Siux ST3 Pro", 
+            categoria: "Pádel", 
+            tipo: "Equipamiento / Herramienta Principal", 
+            marca: "Siux", 
+            precio: 15500, 
+            condicion: "Usado - Como nueva", 
+            vendedor: "Carlos Martínez", 
+            provincia: "Santo Domingo", 
+            whatsapp: "18095551234", 
+            imagenes: ["https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=500"], 
+            plan: "Premium", 
+            esEliminable: false 
+        },
+        { 
+            id: 2, 
+            titulo: "Bate Rawlings Mach AI", 
+            categoria: "Béisbol", 
+            tipo: "Equipamiento / Herramienta Principal", 
+            marca: "Rawlings", 
+            precio: 8500, 
+            condicion: "Nueva", 
+            vendedor: "Miguel Paulino", 
+            provincia: "Santiago", 
+            whatsapp: "18098889876", 
+            imagenes: ["https://images.unsplash.com/photo-1530541930197-ff16ac917b0e?w=500"], 
+            plan: "Destacado", 
+            esEliminable: false 
+        }
     ];
+
     let baseDeDatosActual = JSON.parse(localStorage.getItem('deporterd_database_live')) || mockCloudDatabase;
     let categoriaSeleccionada = "Todos";
 
-    // CARGAR CATEGORÍAS AUTOMÁTICAS
+    // CARGAR CATEGORÍAS EN SELECT
     if (selectCategoria) {
         selectCategoria.innerHTML = '<option value="">-- Selecciona Deporte --</option>';
-        listaDeportes.forEach(deporte => {
+        listaDeportes.forEach(dep => {
             const opt = document.createElement('option');
-            opt.value = deporte; opt.innerText = deporte;
+            opt.value = dep; opt.innerText = dep;
             selectCategoria.appendChild(opt);
         });
     }
 
-    // INTERRUPTORES MODALES PRINCIPALES
+    // GESTIÓN DE APERTURA/CIERRE DE MODALES
     if (btnPublicar) btnPublicar.addEventListener('click', () => modalPublicar.style.display = 'flex');
     if (btnCerrarModal) btnCerrarModal.addEventListener('click', () => modalPublicar.style.display = 'none');
+    if (btnCerrarDetalle) btnCerrarDetalle.addEventListener('click', () => modalDetalle.style.display = 'none');
 
-    function cambiarAUnPaso(numeroPaso) {
-        stepVendedor.classList.remove('active');
-        stepArticulo.classList.remove('active');
-        stepMultimedia.classList.remove('active');
-        stepPago.classList.remove('active');
-        document.getElementById('ind-1').classList.remove('active');
-        document.getElementById('ind-2').classList.remove('active');
-        document.getElementById('ind-3').classList.remove('active');
-        document.getElementById('ind-4').classList.remove('active');
+    function cambiarAUnPaso(num) {
+        [stepVendedor, stepArticulo, stepMultimedia, stepPago].forEach(s => s.classList.remove('active'));
+        ['ind-1', 'ind-2', 'ind-3', 'ind-4'].forEach(id => document.getElementById(id).classList.remove('active'));
 
-        if (numeroPaso === 1) { stepVendedor.classList.add('active'); document.getElementById('ind-1').classList.add('active'); }
-        if (numeroPaso === 2) { stepArticulo.classList.add('active'); document.getElementById('ind-2').classList.add('active'); }
-        if (numeroPaso === 3) { stepMultimedia.classList.add('active'); document.getElementById('ind-3').classList.add('active'); }
-        if (numeroPaso === 4) { stepPago.classList.add('active'); document.getElementById('ind-4').classList.add('active'); }
+        if (num === 1) { stepVendedor.classList.add('active'); document.getElementById('ind-1').classList.add('active'); }
+        if (num === 2) { stepArticulo.classList.add('active'); document.getElementById('ind-2').classList.add('active'); }
+        if (num === 3) { stepMultimedia.classList.add('active'); document.getElementById('ind-3').classList.add('active'); }
+        if (num === 4) { stepPago.classList.add('active'); document.getElementById('ind-4').classList.add('active'); }
     }
 
-    // --- MANEJO DE PASOS Y VALIDACIONES ---
+    // NAVEGACIÓN PASO A PASO CON VALIDACIONES INLINE
     if (btnPasarAlPaso2) {
         btnPasarAlPaso2.addEventListener('click', () => {
-            const v = document.getElementById('formVendedor').value.trim();
-            const w = document.getElementById('formWhatsapp').value.trim();
-            const e = document.getElementById('formEmail').value.trim();
-
-            if (!v || !w || !e) {
-                errorStep1.innerText = "Debes completar todos tus datos de contacto obligatorios.";
-                errorStep1.style.display = 'flex';
-                return;
+            if (!document.getElementById('formVendedor').value.trim() || !document.getElementById('formWhatsapp').value.trim() || !document.getElementById('formEmail').value.trim()) {
+                errorStep1.innerText = "Por favor, completa todos los campos obligatorios del vendedor."; errorStep1.style.display = 'flex'; return;
             }
-            errorStep1.style.display = 'none';
-            cambiarAUnPaso(2);
+            errorStep1.style.display = 'none'; cambiarAUnPaso(2);
         });
     }
-
-    if (btnVolverAlPaso1) btnVolverAlPaso1.addEventListener('click', () => { errorStep1.style.display = 'none'; cambiarAUnPaso(1); });
+    if (btnVolverAlPaso1) btnVolverAlPaso1.addEventListener('click', () => cambiarAUnPaso(1));
 
     if (btnPasarAlPaso3) {
         btnPasarAlPaso3.addEventListener('click', () => {
-            const p = document.getElementById('formPrecio').value;
-            let modeloFinal = selectModelo.value;
-            
-            if (modeloFinal === "Escribir modelo...") {
-                modeloFinal = inputModeloManual.value.trim();
+            const modFinal = (selectModelo.value === "Escribir modelo...") ? inputModeloManual.value.trim() : selectModelo.value;
+            if (!selectCategoria.value || !selectTipo.value || !selectMarca.value || !modFinal || !document.getElementById('formPrecio').value) {
+                errorStep2.innerText = "Todos los campos de detalles técnicos son estrictamente obligatorios."; errorStep2.style.display = 'flex'; return;
             }
-
-            if (!selectCategoria.value || !selectTipo.value || !selectMarca.value || !modeloFinal || !p) {
-                errorStep2.innerText = "Todos los campos de detalles del artículo son obligatorios.";
-                errorStep2.style.display = 'flex';
-                return;
-            }
-            errorStep2.style.display = 'none';
-            cambiarAUnPaso(3);
+            errorStep2.style.display = 'none'; cambiarAUnPaso(3);
         });
     }
-
-    if (btnVolverAlPaso2) btnVolverAlPaso2.addEventListener('click', () => { errorStep2.style.display = 'none'; cambiarAUnPaso(2); });
+    if (btnVolverAlPaso2) btnVolverAlPaso2.addEventListener('click', () => cambiarAUnPaso(2));
 
     if (btnPasarAlPaso4) {
         btnPasarAlPaso4.addEventListener('click', () => {
             if (base64ImagesArray.length === 0) {
-                errorStep3.innerText = "¡Foto Obligatoria! Sube al menos 1 imagen real de tu producto (Máximo 3).";
-                errorStep3.style.display = 'flex';
-                return;
+                errorStep3.innerText = "Sube al menos 1 foto real de tu artículo deportivo."; errorStep3.style.display = 'flex'; return;
             }
-            errorStep3.style.display = 'none';
-            cambiarAUnPaso(4);
+            errorStep3.style.display = 'none'; cambiarAUnPaso(4);
         });
     }
+    if (btnVolverAlPaso3) btnVolverAlPaso3.addEventListener('click', () => cambiarAUnPaso(3));
 
-    if (btnVolverAlPaso3) btnVolverAlPaso3.addEventListener('click', () => { errorStep3.style.display = 'none'; cambiarAUnPaso(3); });
-
-
-    // --- MANEJO DE MÚLTIPLES IMÁGENES (HASTA 3) ---
+    // CARGA Y PREVISUALIZACIÓN DE FOTOS MULTIPLES
     if (inputImg) {
         inputImg.addEventListener('change', () => {
-            const archivos = Array.from(inputImg.files);
-            
-            archivos.forEach(file => {
+            Array.from(inputImg.files).forEach(file => {
                 if (base64ImagesArray.length >= 3) return;
-
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    base64ImagesArray.push(e.target.result);
-                    actualizarGridImagenes();
-                };
-                reader.readAsDataURL(file);
+                const r = new FileReader();
+                r.onload = (e) => { base64ImagesArray.push(e.target.result); actualizarGridImagenes(); };
+                r.readAsDataURL(file);
             });
-            inputImg.value = ""; // Limpiar input para permitir re-subir la misma
+            inputImg.value = "";
         });
     }
 
     function actualizarGridImagenes() {
         previewMultiGrid.innerHTML = "";
-        base64ImagesArray.forEach((imgSrc, index) => {
-            const card = document.createElement('div');
-            card.className = "modern-preview-card";
-            card.innerHTML = `
-                <img src="${imgSrc}" alt="Preview ${index + 1}">
-                <button type="button" class="btn-delete-image-floating" data-idx="${index}">🗑️</button>
-            `;
+        base64ImagesArray.forEach((src, idx) => {
+            const card = document.createElement('div'); card.className = "modern-preview-card";
+            card.innerHTML = `<img src="${src}"><button type="button" class="btn-delete-image-floating" data-idx="${idx}">🗑️</button>`;
             previewMultiGrid.appendChild(card);
         });
-
-        // Eventos para eliminar de forma individual
-        document.querySelectorAll('.btn-delete-image-floating').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const idx = parseInt(e.target.getAttribute('data-idx'));
-                base64ImagesArray.splice(idx, 1);
+        document.querySelectorAll('.btn-delete-image-floating').forEach(b => {
+            b.addEventListener('click', (e) => {
+                base64ImagesArray.splice(parseInt(e.target.getAttribute('data-idx')), 1);
                 actualizarGridImagenes();
             });
         });
     }
 
-
-    // --- DESPLEGABLES ASOCIADOS EN CADENA ---
+    // MENÚS EN CASCADA COMPLETO
     if (selectCategoria) {
         selectCategoria.addEventListener('change', () => {
-            selectTipo.innerHTML = '<option value="">-- Selecciona Tipo --</option>';
-            selectMarca.innerHTML = '<option value="">-- Elige el tipo de artículo --</option>';
-            selectModelo.innerHTML = '<option value="">-- Elige primero la marca --</option>';
-            selectMarca.disabled = true; selectModelo.disabled = true;
-            wrapperModeloManual.style.display = "none";
-
+            selectTipo.innerHTML = '<option value="">-- Selecciona Tipo --</option>'; selectMarca.innerHTML = '<option value="">-- Elige Tipo --</option>'; selectModelo.innerHTML = '<option value="">-- Elige Marca --</option>';
+            selectMarca.disabled = true; selectModelo.disabled = true; wrapperModeloManual.style.display = "none";
             if (selectCategoria.value) {
                 selectTipo.disabled = false;
-                tiposArticulos.forEach(tipo => {
-                    const opt = document.createElement('option');
-                    opt.value = tipo; opt.innerText = tipo;
-                    selectTipo.appendChild(opt);
-                });
+                tiposArticulos.forEach(t => selectTipo.appendChild(new Option(t, t)));
             } else { selectTipo.disabled = true; }
         });
     }
 
     if (selectTipo) {
         selectTipo.addEventListener('change', () => {
-            selectMarca.innerHTML = '<option value="">-- Selecciona Marca --</option>';
-            selectModelo.innerHTML = '<option value="">-- Elige primero la marca --</option>';
-            selectModelo.disabled = true;
-            wrapperModeloManual.style.display = "none";
-
-            const tipo = selectTipo.value;
-            const dep = selectCategoria.value;
-
-            if (!tipo) { selectMarca.disabled = true; return; }
+            selectMarca.innerHTML = '<option value="">-- Selecciona Marca --</option>'; selectModelo.innerHTML = '<option value="">-- Elige Marca --</option>';
+            selectModelo.disabled = true; wrapperModeloManual.style.display = "none";
+            if (!selectTipo.value) { selectMarca.disabled = true; return; }
             selectMarca.disabled = false;
-
-            let marcasDisponibles = [];
-            if (tipo === "Equipamiento / Herramienta Principal") {
-                marcasDisponibles = marcasPorTipo[tipo][dep] || marcasPorTipo[tipo]["Otros Deportes"];
-            } else { marcasDisponibles = marcasPorTipo[tipo]["General"]; }
-
-            marcasDisponibles.forEach(marca => {
-                const opt = document.createElement('option');
-                opt.value = marca; opt.innerText = marca;
-                selectMarca.appendChild(opt);
-            });
-
-            const optOtra = document.createElement('option');
-            optOtra.value = "Otra marca..."; optOtra.innerText = "➕ Otra marca...";
-            selectMarca.appendChild(optOtra);
+            
+            let mks = (selectTipo.value === "Equipamiento / Herramienta Principal") 
+                ? (marcasPorTipo[selectTipo.value][selectCategoria.value] || marcasPorTipo[selectTipo.value]["Otros Deportes"]) 
+                : marcasPorTipo[selectTipo.value]["General"];
+                
+            mks.forEach(m => selectMarca.appendChild(new Option(m, m)));
+            selectMarca.appendChild(new Option("➕ Otra marca...", "Otra marca..."));
         });
     }
 
     if (selectMarca) {
         selectMarca.addEventListener('change', () => {
-            let marca = selectMarca.value;
-            if (!marca) { selectModelo.disabled = true; wrapperModeloManual.style.display = "none"; return; }
-
-            if (marca === "Otra marca...") {
-                wrapperModeloManual.style.display = "block";
-                inputModeloManual.placeholder = "Escribe la Marca y el Modelo aquí...";
-                selectModelo.disabled = true;
-                return;
+            if (!selectMarca.value) { selectModelo.disabled = true; wrapperModeloManual.style.display = "none"; return; }
+            if (selectMarca.value === "Otra marca...") {
+                wrapperModeloManual.style.display = "block"; inputModeloManual.placeholder = "Escribe la Marca y el Modelo aquí..."; selectModelo.disabled = true;
+            } else {
+                selectModelo.disabled = false; wrapperModeloManual.style.display = "none";
+                selectModelo.innerHTML = '<option value="">-- Elige Opción --</option><option value="Escribir modelo...">✍️ Escribir modelo manualmente...</option>';
             }
-
-            selectModelo.disabled = false;
-            wrapperModeloManual.style.display = "none";
-            selectModelo.innerHTML = `
-                <option value="">-- Elige Opción --</option>
-                <option value="Escribir modelo...">✍️ Escribir modelo manualmente...</option>
-            `;
         });
     }
 
     if (selectModelo) {
         selectModelo.addEventListener('change', () => {
-            if (selectModelo.value === "Escribir modelo...") {
-                wrapperModeloManual.style.display = "block";
-                inputModeloManual.placeholder = "Escribe el modelo exacto aquí...";
-            } else {
-                wrapperModeloManual.style.display = "none";
-            }
+            wrapperModeloManual.style.display = (selectModelo.value === "Escribir modelo...") ? "block" : "none";
+            if (selectModelo.value === "Escribir modelo...") inputModeloManual.placeholder = "Escribe el modelo exacto aquí...";
         });
     }
 
-
-    // MONTO DE FACTURACIÓN INTERACTIVO (PREMIUM CORREGIDO A 4000)
-    const radiosPlan = document.getElementsByName('planRadio');
-    radiosPlan.forEach(radio => {
-        radio.addEventListener('change', (e) => {
-            const precio = parseFloat(e.target.getAttribute('data-price'));
-            document.getElementById('montoFinalLabel').innerText = `RD$ ${precio.toLocaleString()}`;
+    // MANEJO DE PRECIOS DINÁMICOS DEL PLAN SELECCIONADO
+    document.getElementsByName('planRadio').forEach(r => {
+        r.addEventListener('change', (e) => {
+            document.getElementById('montoFinalLabel').innerText = `RD$ ${parseFloat(e.target.getAttribute('data-price')).toLocaleString()}`;
         });
     });
 
-
-    // --- SUBMIT FINAL Y REGISTRO ---
+    // GUARDADO FINAL CORRECTO DEL ANUNCIO
     if (flujoForm) {
         flujoForm.addEventListener('submit', (e) => {
             e.preventDefault();
             
-            const fileComprobante = document.getElementById('formComprobante').files[0];
-            if (!fileComprobante) { 
-                errorStep4.innerText = "Es obligatorio adjuntar la captura del comprobante bancario.";
-                errorStep4.style.display = 'flex';
-                return; 
-            }
+            const fileComp = document.getElementById('formComprobante').files[0];
+            if (!fileComp) { errorStep4.innerText = "Debes adjuntar el comprobante o captura de tu transferencia bancaria."; errorStep4.style.display = 'flex'; return; }
             errorStep4.style.display = 'none';
 
-            const planElegido = document.querySelector('input[name="planRadio"]:checked').value;
-            const vendedorNombre = document.getElementById('formVendedor').value;
-
-            // Procesar título definitivo sin Prompts
-            let marcaFinal = selectMarca.value;
-            let modeloFinal = selectModelo.value;
-
-            if (marcaFinal === "Otra marca...") {
-                marcaFinal = "Variada";
-                modeloFinal = inputModeloManual.value.trim();
-            } else if (modeloFinal === "Escribir modelo...") {
-                modeloFinal = inputModeloManual.value.trim();
-            }
-
-            const tituloDefinitivo = `${marcaFinal} ${modeloFinal}`;
+            let mkF = selectMarca.value;
+            let modF = selectModelo.value;
+            if (mkF === "Otra marca...") { mkF = "Variada"; modF = inputModeloManual.value.trim(); }
+            else if (modF === "Escribir modelo...") { modF = inputModeloManual.value.trim(); }
 
             const nuevoAnuncio = {
                 id: Date.now(),
-                titulo: tituloDefinitivo,
-                marca: marcaFinal,
+                titulo: `${mkF} ${modF}`,
+                marca: mkF,
                 tipo: selectTipo.value,
                 precio: parseFloat(document.getElementById('formPrecio').value),
                 categoria: selectCategoria.value,
                 condicion: document.getElementById('formCondicion').value,
-                vendedor: vendedorNombre,
+                vendedor: document.getElementById('formVendedor').value,
                 provincia: document.getElementById('formProvincia').value,
                 whatsapp: document.getElementById('formWhatsapp').value,
                 imagenes: [...base64ImagesArray],
-                plan: planElegido,
-                esEliminable: true // Flag para saber que fue creado en esta sesión y poder borrarlo
+                plan: document.querySelector('input[name="planRadio"]:checked').value,
+                esEliminable: true
             };
 
             baseDeDatosActual.unshift(nuevoAnuncio);
             localStorage.setItem('deporterd_database_live', JSON.stringify(baseDeDatosActual));
             
-            // Limpieza
             base64ImagesArray = [];
             actualizarGridImagenes();
             renderizarProductos();
@@ -373,47 +297,74 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (btnCerrarExito) {
         btnCerrarExito.addEventListener('click', () => {
-            modalExitoNativo.style.display = 'none';
-            flujoForm.reset();
-            wrapperModeloManual.style.display = "none";
-            cambiarAUnPaso(1);
+            modalExitoNativo.style.display = 'none'; flujoForm.reset();
+            wrapperModeloManual.style.display = "none"; cambiarAUnPaso(1);
         });
     }
 
+    // LOGICA DE DETALLES CON GALERÍA DE IMÁGENES COMPLETA
+    function verDetallesProducto(id) {
+        const prod = baseDeDatosActual.find(x => x.id === id);
+        if (!prod) return;
 
-    // --- RENDERIZACIÓN DE ARTÍCULOS CON SISTEMA DE BORRADO ---
+        document.getElementById('det-titulo').innerText = prod.titulo;
+        document.getElementById('det-precio').innerText = `RD$ ${prod.precio.toLocaleString()}`;
+        document.getElementById('det-marca').innerText = prod.marca;
+        document.getElementById('det-condicion').innerText = prod.condicion;
+        document.getElementById('det-vendedor').innerText = prod.vendedor;
+        document.getElementById('det-provincia').innerText = prod.provincia;
+
+        const linkWp = document.getElementById('det-whatsapp-link');
+        const txtMsg = encodeURIComponent(`Hola ${prod.vendedor}, me interesa tu "${prod.titulo}" en DeporteRD.`);
+        linkWp.href = `https://wa.me/${prod.whatsapp}?text=${txtMsg}`;
+
+        const imgPrincipal = document.getElementById('det-img-main');
+        const miniGrid = document.getElementById('det-mini-grid');
+        miniGrid.innerHTML = "";
+
+        const fotos = (prod.imagenes && prod.imagenes.length > 0) ? prod.imagenes : ["https://images.unsplash.com/photo-1517649763962-0c623066013b?w=500"];
+        imgPrincipal.src = fotos[0];
+
+        fotos.forEach((f, index) => {
+            const imgMini = document.createElement('img'); imgMini.src = f;
+            if (index === 0) imgMini.className = "active";
+            imgMini.addEventListener('click', () => {
+                document.querySelectorAll('.detalle-miniaturas img').forEach(m => m.classList.remove('active'));
+                imgMini.className = "active"; imgPrincipal.src = f;
+            });
+            miniGrid.appendChild(imgMini);
+        });
+
+        modalDetalle.style.display = "flex";
+    }
+
+    // RENDERIZADO COMPLETO DE TARJETAS EN PORTADA
     function renderizarProductos() {
         if (!productsGrid) return;
         productsGrid.innerHTML = '';
-        const buscarTexto = searchInput ? searchInput.value.toLowerCase().trim() : "";
+        const txt = searchInput ? searchInput.value.toLowerCase().trim() : "";
 
         const filtrados = baseDeDatosActual.filter(art => {
-            const matchTexto = art.titulo.toLowerCase().includes(buscarTexto) || art.marca.toLowerCase().includes(buscarTexto);
-            const matchCat = (categoriaSeleccionada === "Todos" || art.categoria === categoriaSeleccionada);
-            return matchTexto && matchCat;
+            const mTxt = art.titulo.toLowerCase().includes(txt) || art.marca.toLowerCase().includes(txt);
+            const mCat = (categoriaSeleccionada === "Todos" || art.categoria === categoriaSeleccionada);
+            return mTxt && mCat;
         });
 
         if(filtrados.length === 0) {
-            productsGrid.innerHTML = `<p style="grid-column: 1/-1; text-align:center; padding:40px; color:#64748b;">No hay artículos disponibles con estos filtros.</p>`;
-            return;
+            productsGrid.innerHTML = `<p style="grid-column:1/-1; text-align:center; padding:40px; color:#64748b;">No hay artículos deportivos disponibles en esta categoría.</p>`; return;
         }
 
         filtrados.forEach(art => {
             const tarjeta = document.createElement('div');
             tarjeta.className = art.plan === "Premium" ? 'product-card card-premium' : (art.plan === "Destacado" ? 'product-card card-destacado' : 'product-card');
             
-            const textoMsg = encodeURIComponent("Hola " + art.vendedor + ", vi tu anuncio de \"" + art.titulo + "\" en DeporteRD. ¿Sigue disponible?");
-            
-            // Usar la primera imagen del arreglo, o una por defecto si está vacío
-            const imagenPrincipal = (art.imagenes && art.imagenes.length > 0) ? art.imagenes[0] : (art.img || "https://images.unsplash.com/photo-1517649763962-0c623066013b?w=500");
-
-            // Si es eliminable (creado localmente), inyectamos el botón de borrar
-            const botonBorrarHTML = art.esEliminable ? `<button class="btn-eliminar-anuncio" data-id="${art.id}">❌</button>` : '';
+            const imgP = (art.imagenes && art.imagenes.length > 0) ? art.imagenes[0] : "https://images.unsplash.com/photo-1517649763962-0c623066013b?w=500";
+            const btnB = art.esEliminable ? `<button class="btn-eliminar-anuncio" data-id="${art.id}">❌</button>` : '';
 
             tarjeta.innerHTML = `
-                ${botonBorrarHTML}
+                ${btnB}
                 <div class="card-img-container">
-                    <img src="${imagenPrincipal}" alt="${art.titulo}">
+                    <img src="${imgP}">
                     <span class="badge-condicion">${art.condicion}</span>
                 </div>
                 <div class="card-info">
@@ -422,43 +373,40 @@ document.addEventListener('DOMContentLoaded', () => {
                     <p class="card-price">RD$ ${art.precio.toLocaleString()}</p>
                     <div class="card-footer">
                         <div><span class="seller-name">${art.vendedor}</span><span class="seller-loc">${art.provincia}</span></div>
-                        <a href="https://wa.me/${art.whatsapp}?text=${textoMsg}" target="_blank" class="btn-whatsapp">WhatsApp</a>
+                        <span class="btn-whatsapp" style="background:#22c55e; padding:4px 8px; font-size:11px; border-radius:4px; color:#fff; font-weight:bold;">Ver más</span>
                     </div>
                 </div>
             `;
-            productsGrid.appendChild(tarjeta);
-        });
+            
+            // Clic en la tarjeta abre el panel de detalles
+            tarjeta.addEventListener('click', () => verDetallesProducto(art.id));
 
-        // Asignar listeners a los botones de eliminación de anuncios
-        document.querySelectorAll('.btn-eliminar-anuncio').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const idABorrar = parseInt(e.target.getAttribute('data-id'));
-                // Filtrar de la lista
-                baseDeDatosActual = baseDeDatosActual.filter(item => item.id !== idABorrar);
-                localStorage.setItem('deporterd_database_live', JSON.stringify(baseDeDatosActual));
-                renderizarProductos();
-            });
+            // Clic en la equis borra el producto sin abrir el panel de detalles
+            const bDel = tarjeta.querySelector('.btn-eliminar-anuncio');
+            if (bDel) {
+                bDel.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    baseDeDatosActual = baseDeDatosActual.filter(x => x.id !== art.id);
+                    localStorage.setItem('deporterd_database_live', JSON.stringify(baseDeDatosActual));
+                    renderizarProductos();
+                });
+            }
+
+            productsGrid.appendChild(tarjeta);
         });
     }
 
     if (tags) {
-        tags.forEach(tag => {
-            tag.addEventListener('click', () => {
-                const activeTag = document.querySelector('.tag-btn.active');
-                if (activeTag) activeTag.classList.remove('active');
-                tag.classList.add('active');
-                categoriaSeleccionada = tag.getAttribute('data-cat');
-                renderizarProductos();
+        tags.forEach(t => {
+            t.addEventListener('click', () => {
+                document.querySelectorAll('.tag-btn').forEach(x => x.classList.remove('active'));
+                t.classList.add('active'); categoriaSeleccionada = t.getAttribute('data-cat'); renderizarProductos();
             });
         });
     }
 
     if (btnBuscar) btnBuscar.addEventListener('click', renderizarProductos);
-    if (searchInput) {
-        searchInput.addEventListener('keyup', (e) => {
-            if(e.key === 'Enter') renderizarProductos();
-        });
-    }
+    if (searchInput) searchInput.addEventListener('keyup', (e) => { if(e.key === 'Enter') renderizarProductos(); });
 
     renderizarProductos();
 });

@@ -35,17 +35,48 @@
                 <button class="tag-btn" data-cat="Baloncesto">Baloncesto</button>
                 <button class="tag-btn" data-cat="Fútbol">Fútbol</button>
                 <button class="tag-btn" data-cat="Bicicletas">Bicicletas</button>
-                <button class="tag-btn" data-cat="Gym & Fitness">Gym & Fitness</button>
                 <button class="tag-btn" data-cat="Tenis">Tenis de Campo</button>
+                <button class="tag-btn" data-cat="Gym & Fitness">Gym & Fitness</button>
             </div>
         </div>
     </header>
 
     <main class="main-content">
-        <h2 class="section-title">Artículos Destacados</h2>
-        <div class="products-grid" id="productsGrid">
-            </div>
+        <h2 class="section-title">Artículos Disponibles</h2>
+        <div class="products-grid" id="productsGrid"></div>
     </main>
+
+    <div class="modal-overlay" id="modalDetalle" style="display: none;">
+        <div class="modal-card" style="max-width: 500px;">
+            <button class="btn-close" id="btnCerrarDetalle">&times;</button>
+            
+            <div class="detalle-layout">
+                <div class="detalle-galeria">
+                    <div class="detalle-foto-principal">
+                        <img id="det-img-main" src="" alt="Foto Principal">
+                    </div>
+                    <div class="detalle-miniaturas" id="det-mini-grid">
+                        </div>
+                </div>
+
+                <div class="info-box">
+                    <h2 id="det-titulo">Título del Artículo</h2>
+                    <p class="precio" id="det-precio">RD$ 0</p>
+                    
+                    <div class="meta-grid">
+                        <div class="meta-item">Marca: <strong id="det-marca">-</strong></div>
+                        <div class="meta-item">Condición: <strong id="det-condicion">-</strong></div>
+                        <div class="meta-item">Vendedor: <strong id="det-vendedor">-</strong></div>
+                        <div class="meta-item">Ubicación: <strong id="det-provincia">-</strong></div>
+                    </div>
+
+                    <a id="det-whatsapp-link" href="#" target="_blank" class="btn-whatsapp" style="display:block; text-align:center; padding:12px; font-size:15px; margin-top:10px;">
+                        💬 Contactar por WhatsApp
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="modal-overlay" id="modalPublicar" style="display: none;">
         <div class="modal-card">
@@ -55,47 +86,39 @@
                 <div class="step-indicator active" id="ind-1"><span>1</span> Vendedor</div>
                 <div class="step-indicator" id="ind-2"><span>2</span> Artículo</div>
                 <div class="step-indicator" id="ind-3"><span>3</span> Multimedia</div>
-                <div class="step-indicator" id="ind-4"><span>4</span> Plan y Pago</div>
+                <div class="step-indicator" id="ind-4"><span>4</span> Pago</div>
             </div>
 
             <form id="flujoPublicarForm">
                 
                 <div id="step-vendedor" class="step-content active">
                     <h3 class="step-title">Información del Vendedor</h3>
-                    <p class="step-subtitle">Introduce tus datos de contacto para que los compradores te escriban directamente.</p>
-                    
+                    <p class="step-subtitle">Introduce tus datos de contacto para los compradores.</p>
                     <div id="error-step-1" class="error-banner-inline" style="display: none;"></div>
-
                     <div class="form-group">
-                        <label for="formVendedor">Nombre Completo *</label>
+                        <label>Nombre Completo *</label>
                         <input type="text" id="formVendedor" placeholder="Ej. Juan Pérez">
                     </div>
-
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="formWhatsapp">WhatsApp / Celular (Sin guiones) *</label>
+                            <label>WhatsApp (Sin guiones) *</label>
                             <input type="tel" id="formWhatsapp" placeholder="Ej. 8095551111">
                         </div>
                         <div class="form-group">
-                            <label for="formProvincia">Provincia / Localización *</label>
+                            <label>Provincia / Localización *</label>
                             <select id="formProvincia">
-                                <option value="Santo Domingo">Santo Domingo (DN)</option>
+                                <option value="Santo Domingo">Santo Domingo</option>
                                 <option value="Santiago">Santiago</option>
-                                <option value="La Altagracia">La Altagracia (Bávaro / Punta Cana)</option>
+                                <option value="La Altagracia">La Altagracia</option>
                                 <option value="San Cristóbal">San Cristóbal</option>
                                 <option value="La Romana">La Romana</option>
-                                <option value="Puerto Plata">Puerto Plata</option>
-                                <option value="San Pedro de Macorís">San Pedro de Macorís</option>
-                                <option value="Duarte">Duarte (San Francisco)</option>
                             </select>
                         </div>
                     </div>
-
                     <div class="form-group">
-                        <label for="formEmail">Correo Electrónico *</label>
-                        <input type="email" id="formEmail" placeholder="Ej. tu-correo@gmail.com">
+                        <label>Correo Electrónico *</label>
+                        <input type="email" id="formEmail" placeholder="tu-correo@gmail.com">
                     </div>
-
                     <div class="step-actions" style="justify-content: flex-end;">
                         <button type="button" class="btn-next" id="btnPasarAlPaso2">Siguiente Paso →</button>
                     </div>
@@ -103,47 +126,36 @@
 
                 <div id="step-articulo" class="step-content">
                     <h3 class="step-title">Detalles del Artículo Deportivo</h3>
-                    <p class="step-subtitle">Todos los campos técnicos son estrictamente obligatorios.</p>
-                    
                     <div id="error-step-2" class="error-banner-inline" style="display: none;"></div>
-
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="formCategoria">Deporte Principal *</label>
-                            <select id="formCategoria">
-                                </select>
+                            <label>Deporte Principal *</label>
+                            <select id="formCategoria"></select>
                         </div>
                         <div class="form-group">
-                            <label for="formTipo">Tipo de Artículo *</label>
-                            <select id="formTipo" disabled>
-                                <option value="">-- Elige primero el deporte --</option>
-                            </select>
+                            <label>Tipo de Artículo *</label>
+                            <select id="formTipo" disabled><option value="">-- Elige Deporte --</option></select>
                         </div>
                     </div>
-
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="formMarca">Marca *</label>
-                            <select id="formMarca" disabled>
-                                <option value="">-- Elige primero la marca --</option>
-                            </select>
+                            <label>Marca *</label>
+                            <select id="formMarca" disabled><option value="">-- Elige Tipo --</option></select>
                         </div>
                         <div class="form-group">
-                            <label for="formModelo">Modelo *</label>
-                            <select id="formModelo" disabled>
-                                <option value="">-- Elige primero la marca --</option>
-                            </select>
+                            <label>Modelo *</label>
+                            <select id="formModelo" disabled><option value="">-- Elige Marca --</option></select>
                         </div>
                     </div>
-
+                    
                     <div id="wrapperModeloManual" class="campo-manual-container" style="display: none;">
-                        <label for="inputModeloManual">Especifica la marca o modelo de forma manual aquí: *</label>
+                        <label>Especifica la marca/modelo de forma manual: *</label>
                         <input type="text" id="inputModeloManual" placeholder="Escribe el modelo exacto...">
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="formCondicion">Condición *</label>
+                            <label>Condición *</label>
                             <select id="formCondicion">
                                 <option value="Nueva">Nueva</option>
                                 <option value="Usado - Como nueva">Usado - Como nueva</option>
@@ -152,13 +164,10 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="formPrecio">Precio (RD$) *</label>
+                            <label>Precio (RD$) *</label>
                             <input type="number" id="formPrecio" placeholder="Ej. 14500">
                         </div>
                     </div>
-
-                    <input type="hidden" id="formTitulo" value="">
-
                     <div class="step-actions">
                         <button type="button" class="btn-prev" id="btnVolverAlPaso1">← Atrás</button>
                         <button type="button" class="btn-next" id="btnPasarAlPaso3">Siguiente Paso →</button>
@@ -167,21 +176,16 @@
 
                 <div id="step-multimedia" class="step-content">
                     <h3 class="step-title">Fotos del Artículo</h3>
-                    <p class="step-subtitle">Sube imágenes reales de tu producto. Puedes agregar hasta 3 fotos simultáneas.</p>
-                    
+                    <p class="step-subtitle">Sube imágenes claras del producto (Máximo 3).</p>
                     <div id="error-step-3" class="error-banner-inline" style="display: none;"></div>
-
                     <div class="upload-container-modern">
-                        <label for="formImg" class="upload-zone-modern" id="dropZone">
+                        <label for="formImg" class="upload-zone-modern">
                             <span class="upload-icon-animated">📸</span>
                             <p class="upload-text-main">Haga clic aquí para <span class="upload-link">cargar fotos</span></p>
-                            <p class="upload-text-sub">Soporta un máximo de 3 imágenes claras</p>
                             <input type="file" id="formImg" accept="image/*" multiple style="display: none;">
                         </label>
-
                         <div id="previewMultiGrid" class="preview-multi-grid"></div>
                     </div>
-
                     <div class="step-actions">
                         <button type="button" class="btn-prev" id="btnVolverAlPaso2">← Atrás</button>
                         <button type="button" class="btn-next" id="btnPasarAlPaso4">Siguiente Paso →</button>
@@ -189,18 +193,16 @@
                 </div>
 
                 <div id="step-pago" class="step-content">
-                    <h3 class="step-title">Selecciona un Plan de Exposición</h3>
-                    <p class="step-subtitle">Tu anuncio requiere validación manual. Selecciona cómo deseas posicionarlo.</p>
-                    
+                    <h3 class="step-title">Selecciona tu Plan de Exposición</h3>
                     <div id="error-step-4" class="error-banner-inline" style="display: none;"></div>
-
+                    
                     <div class="planes-selector-grid">
                         <label class="plan-card-opt border-regular">
                             <input type="radio" name="planRadio" value="Básico" data-price="1500" checked>
                             <div class="plan-card-inner">
                                 <span class="p-badge regular">Estándar</span>
                                 <h4>Anuncio Básico</h4>
-                                <p>Publicación estándar visible en el feed regular de búsquedas por 30 días.</p>
+                                <p>Visible en el feed regular por 30 días.</p>
                                 <p class="p-price">RD$ 1,500</p>
                             </div>
                         </label>
@@ -210,7 +212,7 @@
                             <div class="plan-card-inner">
                                 <span class="p-badge destacado">Recomendado</span>
                                 <h4>Anuncio Destacado</h4>
-                                <p>Borde azul premium y mejor visibilidad en los resultados de búsquedas filtradas.</p>
+                                <p>Borde azul premium y mayor empuje en búsquedas.</p>
                                 <p class="p-price">RD$ 2,500</p>
                             </div>
                         </label>
@@ -220,26 +222,26 @@
                             <div class="plan-card-inner">
                                 <span class="p-badge premium">Máximo Alcance</span>
                                 <h4>Anuncio Premium 🔥</h4>
-                                <p>Marco dorado brillante, fijado arriba de la portada principal y prioridad absoluta en búsquedas.</p>
+                                <p>Fijado al tope con marco dorado brillante.</p>
                                 <p class="p-price">RD$ 4,000</p>
                             </div>
                         </label>
                     </div>
 
-                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 15px; border-radius: 10px; margin: 20px 0; text-align: left;">
-                        <h4 style="font-size: 14px; margin-bottom: 5px; color: #0f172a;">Banco Popular Dominicano</h4>
-                        <p style="font-size: 13px; color: #475569;">Cuenta Corriente: <strong>834211904</strong></p>
-                        <p style="font-size: 13px; color: #475569;">Titular: <strong>DeporteRD S.R.L.</strong></p>
+                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 15px; border-radius: 10px; margin: 15px 0;">
+                        <h4 style="font-size: 13px;">Banco Popular Dominicano</h4>
+                        <p style="font-size: 12px; color: #475569;">Cuenta Corriente: <strong>834211904</strong></p>
+                        <p style="font-size: 12px; color: #475569;">Titular: <strong>DeporteRD S.R.L.</strong></p>
                     </div>
-
-                    <div class="form-group" style="text-align: left;">
-                        <label for="formComprobante">Adjuntar Comprobante de Pago (Foto / Captura) *</label>
+                    
+                    <div class="form-group">
+                        <label>Adjuntar Comprobante de Pago *</label>
                         <input type="file" id="formComprobante" accept="image/*">
                     </div>
 
                     <div class="step-actions">
                         <button type="button" class="btn-prev" id="btnVolverAlPaso3">← Atrás</button>
-                        <button type="submit" class="btn-finalizar" id="btnSubmitFinal">Publicar y Pagar (<span id="montoFinalLabel">RD$ 1,500</span>)</button>
+                        <button type="submit" class="btn-finalizar">Publicar y Pagar (<span id="montoFinalLabel">RD$ 1,500</span>)</button>
                     </div>
                 </div>
 
@@ -248,13 +250,11 @@
     </div>
 
     <div class="modal-overlay" id="modalExitoNativo" style="display: none; z-index: 2000;">
-        <div class="modal-card" style="max-width: 450px; text-align: center; padding: 35px 25px;">
-            <div style="font-size: 55px; margin-bottom: 15px;">🎉</div>
-            <h3 style="font-size: 22px; font-weight: bold; margin-bottom: 10px; color: #0f172a;">¡Anuncio enviado a revisión!</h3>
-            <p style="font-size: 14px; color: #475569; line-height: 1.5; margin-bottom: 25px;">
-                Tu comprobante de pago ha sido registrado. Nuestro equipo (**DeporteRD**) validará la transferencia en un plazo de **5 a 15 minutos** en nuestro banco y tu anuncio se activará automáticamente en la portada principal. ¡Gracias!
-            </p>
-            <button type="button" class="btn-finalizar" id="btnCerrarExito" style="width: 100%; padding: 12px;">Entendido</button>
+        <div class="modal-card" style="max-width: 400px; text-align: center; padding: 30px;">
+            <div style="font-size: 50px; margin-bottom: 10px;">🎉</div>
+            <h3>¡Anuncio enviado!</h3>
+            <p style="font-size: 13px; color: #475569; margin: 15px 0;">DeporteRD validará tu transferencia en 5 a 15 minutos.</p>
+            <button type="button" class="btn-finalizar" id="btnCerrarExito" style="width:100%;">Entendido</button>
         </div>
     </div>
 
